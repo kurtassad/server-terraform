@@ -266,3 +266,24 @@ variable "log_level" {
     error_message = "The value for log_level must be 'INFO', 'DEBUG', 'WARN', or 'TRACE'."
   }
 }
+
+variable "ca_certificate" {
+  type        = string
+  description = "Optional CA certificate in PEM format. If provided along with client_certificate and client_key, these will be used instead of generating certificates. In this mode, server certificates will not be generated."
+  default     = null
+  sensitive   = false
+}
+
+variable "client_certificate" {
+  type        = string
+  description = "Optional client certificate in PEM format. Must be provided together with ca_certificate and client_key if using provided certificates mode."
+  default     = null
+  sensitive   = false
+}
+
+variable "client_key" {
+  type        = string
+  description = "Optional client private key in PEM format. Must be provided together with ca_certificate and client_certificate if using provided certificates mode."
+  default     = null
+  sensitive   = true
+}

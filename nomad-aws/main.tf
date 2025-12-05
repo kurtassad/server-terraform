@@ -39,6 +39,10 @@ module "nomad_tls" {
   source                = "../shared/modules/tls"
   nomad_server_hostname = var.deploy_nomad_server_instances ? "nomad-server.${var.nomad_server_hostname}" : var.nomad_server_hostname
   nomad_server_port     = var.nomad_server_port
+
+  ca_certificate     = var.ca_certificate
+  client_certificate = var.client_certificate
+  client_key         = var.client_key
 }
 
 data "cloudinit_config" "nomad_user_data" {

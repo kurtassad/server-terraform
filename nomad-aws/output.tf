@@ -1,12 +1,12 @@
 
 output "nomad_server_cert_base64" {
   description = "set this value for the `nomad.server.rpc.mTLS.certificate` key in the CircleCI Server's Helm values.yaml"
-  value       = var.deploy_nomad_server_instances ? "" : base64encode(module.nomad_tls.nomad_server_cert)
+  value       = try(base64encode(module.nomad_tls.nomad_server_cert), "")
 }
 
 output "nomad_server_key_base64" {
   description = "set this value for the `nomad.server.rpc.mTLS.privateKey` key in the CircleCI Server's Helm values.yaml"
-  value       = var.deploy_nomad_server_instances ? "" : nonsensitive(base64encode(module.nomad_tls.nomad_server_key))
+  value       = try(nonsensitive(base64encode(module.nomad_tls.nomad_server_key)), "")
 }
 
 output "nomad_tls_ca_base64" {

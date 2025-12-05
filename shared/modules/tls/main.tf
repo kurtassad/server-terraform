@@ -3,7 +3,7 @@ terraform {
   required_providers {
     tls = {
       source  = "hashicorp/tls"
-      version = "~> 3.2"
+      version = ">= 3.2"
     }
   }
 }
@@ -11,15 +11,19 @@ terraform {
 locals {
   cert_validity_period  = 876600                    # 100 years, basically doesn't expire
   nomad_server_endpoint = var.nomad_server_hostname #:${var.nomad_server_port}"
+  use_provided_certs    = var.ca_certificate != null && var.client_certificate != null && var.client_key != null
+  ca_cert_pem           = local.use_provided_certs ? var.ca_certificate : tls_self_signed_cert.nomad_ca[0].cert_pem
 }
 
 resource "tls_private_key" "nomad_ca" {
+  count     = local.use_provided_certs ? 0 : 1
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_self_signed_cert" "nomad_ca" {
-  private_key_pem = tls_private_key.nomad_ca.private_key_pem
+  count           = local.use_provided_certs ? 0 : 1
+  private_key_pem = tls_private_key.nomad_ca[0].private_key_pem
 
   subject {
     common_name         = "Nomad CircleCI CA"
@@ -45,12 +49,14 @@ resource "tls_self_signed_cert" "nomad_ca" {
 }
 
 resource "tls_private_key" "nomad_client" {
+  count     = local.use_provided_certs ? 0 : 1
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_cert_request" "nomad_client" {
-  private_key_pem = tls_private_key.nomad_client.private_key_pem
+  count           = local.use_provided_certs ? 0 : 1
+  private_key_pem = tls_private_key.nomad_client[0].private_key_pem
 
   subject {
     common_name  = local.nomad_server_endpoint
@@ -71,9 +77,10 @@ resource "tls_cert_request" "nomad_client" {
 }
 
 resource "tls_locally_signed_cert" "nomad_client" {
-  cert_request_pem   = tls_cert_request.nomad_client.cert_request_pem
-  ca_private_key_pem = tls_private_key.nomad_ca.private_key_pem
-  ca_cert_pem        = tls_self_signed_cert.nomad_ca.cert_pem
+  count              = local.use_provided_certs ? 0 : 1
+  cert_request_pem   = tls_cert_request.nomad_client[0].cert_request_pem
+  ca_private_key_pem = tls_private_key.nomad_ca[0].private_key_pem
+  ca_cert_pem        = local.ca_cert_pem
 
   validity_period_hours = local.cert_validity_period
 
@@ -87,12 +94,14 @@ resource "tls_locally_signed_cert" "nomad_client" {
 }
 
 resource "tls_private_key" "nomad_server" {
+  count     = local.use_provided_certs ? 0 : 1
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "tls_cert_request" "nomad_server" {
-  private_key_pem = tls_private_key.nomad_server.private_key_pem
+  count           = local.use_provided_certs ? 0 : 1
+  private_key_pem = tls_private_key.nomad_server[0].private_key_pem
 
   subject {
     common_name  = local.nomad_server_endpoint
@@ -114,9 +123,10 @@ resource "tls_cert_request" "nomad_server" {
 }
 
 resource "tls_locally_signed_cert" "nomad_server" {
-  cert_request_pem   = tls_cert_request.nomad_server.cert_request_pem
-  ca_private_key_pem = tls_private_key.nomad_ca.private_key_pem
-  ca_cert_pem        = tls_self_signed_cert.nomad_ca.cert_pem
+  count              = local.use_provided_certs ? 0 : 1
+  cert_request_pem   = tls_cert_request.nomad_server[0].cert_request_pem
+  ca_private_key_pem = tls_private_key.nomad_ca[0].private_key_pem
+  ca_cert_pem        = local.ca_cert_pem
 
   validity_period_hours = local.cert_validity_period
 
