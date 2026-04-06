@@ -33,7 +33,7 @@ system_update() {
 }
 
 retry() {
-    local -r -i max_attempts=5
+    local -r -i max_attempts=${apt_retry_max_attempts}
     local -i attempt_num=1
 
     until "$@"; do
@@ -41,7 +41,7 @@ retry() {
             echo "Attempt $attempt_num failed and there are no more attempts left!"
             exit 1
         else
-            echo "Attempt $attempt_num failed! Trying again..."
+            echo "Attempt $attempt_num failed! Trying again in 5s... ($attempt_num/$max_attempts)"
             ((attempt_num++))
             sleep 5
         fi
@@ -107,10 +107,10 @@ install_nomad() {
 	log "Installing Nomad version ${nomad_version}"
 	log "----------------------------------------------"
 	sudo apt-get update && \
-	sudo apt-get install wget gpg coreutils
+	sudo apt-get install -y wget gpg coreutils
 	wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
 	echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-	sudo apt-get update && sudo apt-get install nomad=${nomad_version}
+	sudo apt-get update && sudo apt-get install -y nomad=${nomad_version}
 
 	nomad --version || ( echo "Nomad failed to install" && exit 1 )
 }
@@ -239,7 +239,7 @@ configure_nomad() {
 	EOT
 
 	echo "----------------------------------------------"
-	log "Starting up nomad" 
+	log "Starting up nomad"
 	echo "----------------------------------------------"
 	systemctl enable --now nomad
 }

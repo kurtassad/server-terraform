@@ -189,10 +189,22 @@ variable "machine_image_family" {
   default     = "ubuntu-2204-lts"
 }
 
-variable "nomad_version" {
+variable "nomad_client_version" {
   type        = string
-  description = "The version of Nomad to install"
+  description = "The version of Nomad cients to install"
   default     = "1.7.7-1"
+}
+
+variable "nomad_server_version" {
+  type        = string
+  description = "The version of Nomad servers to install"
+  default     = "1.11.3-1"
+}
+
+variable "apt_retry_max_attempts" {
+  type        = number
+  description = "Maximum number of retry attempts for apt-get commands during startup. Each attempt waits 5 seconds."
+  default     = 5
 }
 
 variable "health_check_timeout_sec" {

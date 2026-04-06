@@ -135,6 +135,7 @@ There are more examples in the [examples](./examples/) directory.
 | <a name="input_allow_ssh"></a> [allow\_ssh](#input\_allow\_ssh) | Enable SSH access inbound (true/false) | `bool` | `false` | no |
 | <a name="input_allowed_ips_circleci_server_nomad_access"></a> [allowed\_ips\_circleci\_server\_nomad\_access](#input\_allowed\_ips\_circleci\_server\_nomad\_access) | List of IPv4 ranges that are permitted to access nomad nodes; used for circleci-server-to-nomad communication | `list(string)` | <pre>[<br/>  "0.0.0.0/0"<br/>]</pre> | no |
 | <a name="input_allowed_ips_retry_ssh"></a> [allowed\_ips\_retry\_ssh](#input\_allowed\_ips\_retry\_ssh) | List of IPv4 ranges that are permitted to access nomad nodes for the retry-with-ssh feature | `list(string)` | <pre>[<br/>  "0.0.0.0/0"<br/>]</pre> | no |
+| <a name="input_apt_retry_max_attempts"></a> [apt\_retry\_max\_attempts](#input\_apt\_retry\_max\_attempts) | Maximum number of retry attempts for apt-get commands during startup. Each attempt waits 5 seconds. | `number` | `5` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | The AWS region | `string` | n/a | yes |
 | <a name="input_basename"></a> [basename](#input\_basename) | Name used as prefix for AWS resources | `string` | n/a | yes |
 | <a name="input_blocked_cidrs"></a> [blocked\_cidrs](#input\_blocked\_cidrs) | List of CIDR blocks to block access to from within jobs, e.g. your K8s nodes.<br/>You won't want to block access to external VMs here.<br/>It's okay when your dns\_server is within a blocked CIDR block, you can use var.dns\_server to create an exemption. | `list(string)` | n/a | yes |
@@ -156,9 +157,10 @@ There are more examples in the [examples](./examples/) directory.
 | <a name="input_max_server_instances"></a> [max\_server\_instances](#input\_max\_server\_instances) | Maximum number of Nomad Server instances | `number` | `7` | no |
 | <a name="input_nodes"></a> [nodes](#input\_nodes) | Desired Number of nomad clients to create | `number` | n/a | yes |
 | <a name="input_nomad_auto_scaler"></a> [nomad\_auto\_scaler](#input\_nomad\_auto\_scaler) | If set to true, A Nomad User or A Role will be created based on enable\_irsa variable values | `bool` | `false` | no |
+| <a name="input_nomad_client_version"></a> [nomad\_client\_version](#input\_nomad\_client\_version) | The version of Nomad cients to install | `string` | `"1.7.7-1"` | no |
 | <a name="input_nomad_server_hostname"></a> [nomad\_server\_hostname](#input\_nomad\_server\_hostname) | Hostname of RPC service of Nomad control plane (e.g circleci.example.com). | `string` | n/a | yes |
 | <a name="input_nomad_server_port"></a> [nomad\_server\_port](#input\_nomad\_server\_port) | Port that the server endpoint listens on for nomad connections. | `number` | `4647` | no |
-| <a name="input_nomad_version"></a> [nomad\_version](#input\_nomad\_version) | The version of Nomad to install | `string` | `"1.7.7-1"` | no |
+| <a name="input_nomad_server_version"></a> [nomad\_server\_version](#input\_nomad\_server\_version) | The version of Nomad servers to install | `string` | `"1.11.3-1"` | no |
 | <a name="input_role_name"></a> [role\_name](#input\_role\_name) | Name of the role to add to the instance profile | `string` | `null` | no |
 | <a name="input_security_group_id"></a> [security\_group\_id](#input\_security\_group\_id) | ID for the security group for Nomad clients.<br/>See security documentation for recommendations. | `list(string)` | `[]` | no |
 | <a name="input_server_disk_size_gb"></a> [server\_disk\_size\_gb](#input\_server\_disk\_size\_gb) | Disk size for nomad server instances | `number` | `20` | no |
