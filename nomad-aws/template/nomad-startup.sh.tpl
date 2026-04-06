@@ -12,7 +12,7 @@ export PRIVATE_IP="$(curl -H "X-aws-ec2-metadata-token: $TOKEN" $aws_instance_me
 echo "PUBLIC_IP: $PUBLIC_IP"
 echo "PRIVATE_IP: $PRIVATE_IP"
 
-INSTANCE_ID=$(cloud-init query local_hostname)
+INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" "$aws_instance_metadata_url/latest/meta-data/instance-id")
 export INSTANCE_ID
 echo "INSTANCE_ID: $INSTANCE_ID"
 
